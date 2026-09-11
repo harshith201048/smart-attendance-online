@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Smart Attendance System</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#080808;color:#eee;font-family:Arial,Helvetica,sans-serif}
+header{padding:22px 28px;border-bottom:1px solid #2a2a2a;background:linear-gradient(180deg,#141414,#090909)}
+h1{margin:0;font-size:28px;letter-spacing:2px}
+.sub{margin-top:6px;color:#aaa}
+.wrap{padding:24px;max-width:1400px;margin:auto}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.card{background:#121212;border:1px solid #2b2b2b;border-radius:14px;padding:20px}
+.label{color:#999;font-size:13px;text-transform:uppercase;letter-spacing:1px}
+.value{font-size:32px;margin-top:8px}
+.scan{margin-top:20px}
+.scanbox{min-height:90px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.name{font-size:24px}
+.meta{color:#aaa;margin-top:6px}
+.status{font-weight:bold}
+.tablebox{margin-top:20px;overflow:auto;background:#121212;border:1px solid #2b2b2b;border-radius:14px}
+table{width:100%;border-collapse:collapse}
+th,td{padding:13px 15px;text-align:left;border-bottom:1px solid #252525}
+th{color:#aaa;font-size:12px;text-transform:uppercase}
+.empty{padding:25px;color:#888}
+@media(max-width:800px){.cards{grid-template-columns:1fr}.wrap{padding:14px}}
+</style>
+</head>
+<body>
+<header>
+<h1>SMART ATTENDANCE SYSTEM</h1>
+<div class="sub">Online RFID Attendance Dashboard</div>
+</header>
+<div class="wrap">
+<div class="cards">
+<div class="card"><div class="label">Total Students</div><div class="value" id="total">—</div></div>
+<div class="card"><div class="label">Present Today</div><div class="value" id="present">—</div></div>
+<div class="card"><div class="label">Total Records</div><div class="value" id="records">—</div></div>
+</div>
+
+<div class="card scan">
+<div class="label">Last Attendance Scan</div>
+<div class="scanbox">
+<div>
+<div class="name" id="lastName">Waiting for RFID scan...</div>
+<div class="meta" id="lastMeta">No scan received yet</div>
+</div>
+<div class="status" id="lastStatus">ONLINE</div>
+</div>
+</div>
+
+<div class="tablebox">
+<table>
+<thead><tr><th>Student ID</th><th>Name</th><th>Class</th><th>Section</th><th>Date</th><th>Time</th><th>RFID</th></tr></thead>
+<tbody id="rows"><tr><td colspan="7" class="empty">Loading...</td></tr></tbody>
+</table>
+</div>
+</div>
+
+<script>
+let previousTopId=null;
+
+async function getJSON(url){
+  const r=await fetch(url,{cache:"no-store"});
+  if(!r.ok) throw new Error("HTTP "+r.status);
+  return r.json();
+}
+
+async function refresh(){
+  try{
+    const [s,t]=await Promise.all([getJSON("/api/stats"),getJSON("/api/today")]);
+    document.getElementById("total").textContent=s.total_students;
+    document.getElementById("present").textContent=s.today_present;
+    document.getElementById("records").textContent=s.total_attendance_records;
+
+    const rows=document.getElementById("rows");
+    if(!t.attendance.length){
+      rows.innerHTML='<tr><td colspan="7" class="empty">No attendance recorded today.</td></tr>';
+      return;
+    }
+
+    const top=t.attendance[0];
+    document.getElementById("lastName").textContent=top.name;
+    document.getElementById("lastMeta").textContent=
+      "ID "+top.student_id+" • Class "+top.class_name+"-"+top.section+
+      " • "+top.date+" "+top.time;
+    if(previousTopId!==null && top.id!==previousTopId){
+      document.getElementById("lastStatus").textContent="ATTENDANCE MARKED";
+    }
+    previousTopId=top.id;
+
+    rows.innerHTML=t.attendance.map(x=>`
+      <tr>
+        <td>${escapeHTML(x.student_id)}</td>
+        <td>${escapeHTML(x.name)}</td>
+        <td>${escapeHTML(x.class_name)}</td>
+        <td>${escapeHTML(x.section)}</td>
+        <td>${escapeHTML(x.date)}</td>
+        <td>${escapeHTML(x.time)}</td>
+        <td>${escapeHTML(x.rfid_uid||"")}</td>
+      </tr>`).join("");
+  }catch(e){
+    document.getElementById("lastStatus").textContent="SERVER ERROR";
+    console.error(e);
+  }
+}
+
+function escapeHTML(v){
+  return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+refresh();
+setInterval(refresh,2000);
+</script>
+</body>
+</html>
