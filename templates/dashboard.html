@@ -1,316 +1,265 @@
 <!doctype html>
 <html lang="en">
+
 <head>
+
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<meta
+    name="viewport"
+    content="width=device-width,initial-scale=1"
+>
 
 <title>Smart Attendance System</title>
 
 <style>
 
-*{
-    box-sizing:border-box;
+* {
+    box-sizing: border-box;
 }
 
-body{
-    margin:0;
-    background:#080808;
-    color:#eee;
-    font-family:Arial,Helvetica,sans-serif;
+body {
+    margin: 0;
+    background: #080808;
+    color: #eeeeee;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
-header{
-    padding:22px 28px;
-    border-bottom:1px solid #2a2a2a;
-    background:linear-gradient(180deg,#141414,#090909);
+header {
+    padding: 22px 28px;
+    border-bottom: 1px solid #2a2a2a;
+    background: linear-gradient(
+        180deg,
+        #141414,
+        #090909
+    );
 }
 
-h1{
-    margin:0;
-    font-size:28px;
-    letter-spacing:2px;
+h1 {
+    margin: 0;
+    font-size: 28px;
+    letter-spacing: 2px;
 }
 
-.sub{
-    margin-top:6px;
-    color:#aaa;
+.sub {
+    margin-top: 6px;
+    color: #999;
 }
 
-.wrap{
-    padding:24px;
-    max-width:1400px;
-    margin:auto;
+.wrap {
+    padding: 24px;
+    max-width: 1450px;
+    margin: auto;
 }
 
-.cards{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:16px;
+.card {
+    background: #121212;
+    border: 1px solid #2b2b2b;
+    border-radius: 14px;
+    padding: 20px;
 }
 
-.card{
-    background:#121212;
-    border:1px solid #2b2b2b;
-    border-radius:14px;
-    padding:20px;
+.cards {
+    display: grid;
+    grid-template-columns:
+        repeat(4, 1fr);
+    gap: 16px;
 }
 
-.label{
-    color:#999;
-    font-size:13px;
-    text-transform:uppercase;
-    letter-spacing:1px;
+.label {
+    color: #999;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
-.value{
-    font-size:32px;
-    margin-top:8px;
+.value {
+    font-size: 32px;
+    margin-top: 8px;
 }
 
-.scan{
-    margin-top:20px;
+.section {
+    margin-top: 20px;
 }
 
-.scanbox{
-    min-height:90px;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:20px;
+.tabs {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
 }
 
-.name{
-    font-size:24px;
+.tab {
+    border: 1px solid #333;
+    background: #171717;
+    color: #ddd;
+    padding: 11px 16px;
+    border-radius: 9px;
+    cursor: pointer;
 }
 
-.meta{
-    color:#aaa;
-    margin-top:6px;
+.tab.active {
+    background: #eeeeee;
+    color: #111;
 }
 
-.status{
-    font-weight:bold;
+.panel {
+    display: none;
 }
 
-.status.ok{
-    color:#55ff88;
-}
-
-.status.error{
-    color:#ff5555;
-}
-
-.status.waiting{
-    color:#aaa;
-}
-
-.controls{
-    margin-top:20px;
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:20px;
-}
-
-.section-title{
-    font-size:20px;
-    margin-bottom:18px;
-}
-
-.form-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:12px;
+.panel.active {
+    display: block;
 }
 
 input,
-select{
-    width:100%;
-    padding:12px;
-    background:#080808;
-    color:#eee;
-    border:1px solid #333;
-    border-radius:8px;
-    outline:none;
+select {
+    width: 100%;
+    background: #090909;
+    color: #eee;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 12px;
+    margin-top: 6px;
 }
 
-input:focus,
-select:focus{
-    border-color:#777;
+.formgrid {
+    display: grid;
+    grid-template-columns:
+        repeat(2, 1fr);
+    gap: 14px;
 }
 
-button{
-    padding:11px 16px;
-    border:none;
-    border-radius:8px;
-    background:#eee;
-    color:#080808;
-    font-weight:bold;
-    cursor:pointer;
+.field label {
+    color: #aaa;
+    font-size: 13px;
 }
 
-button:hover{
-    opacity:.85;
+button {
+    border: 0;
+    border-radius: 8px;
+    padding: 11px 16px;
+    cursor: pointer;
+    font-weight: bold;
 }
 
-button.danger{
-    background:#d33;
-    color:white;
+.primary {
+    background: #eee;
+    color: #111;
 }
 
-button.secondary{
-    background:#292929;
-    color:#eee;
+.danger {
+    background: #9b2c2c;
+    color: white;
 }
 
-button.success{
-    background:#38b86b;
-    color:white;
+.green {
+    background: #236b3b;
+    color: white;
 }
 
-.full{
-    grid-column:1/-1;
+.recovery {
+    border: 1px solid #8d6b17;
+    background: #17140a;
 }
 
-.message{
-    margin-top:12px;
-    padding:10px;
-    border-radius:8px;
-    display:none;
+.recovery-uid {
+    font-size: 30px;
+    letter-spacing: 4px;
+    margin: 15px 0;
+    font-family: monospace;
+    color: #ffd95a;
 }
 
-.message.show{
-    display:block;
+.recovery-status {
+    font-size: 18px;
+    font-weight: bold;
 }
 
-.message.success{
-    background:#123b24;
-    color:#72ff9e;
+.tablebox {
+    overflow: auto;
+    background: #121212;
+    border: 1px solid #2b2b2b;
+    border-radius: 14px;
 }
 
-.message.error{
-    background:#3b1212;
-    color:#ff7777;
-}
-
-.recovery-box{
-    margin-top:15px;
-    padding:15px;
-    background:#0b0b0b;
-    border:1px solid #292929;
-    border-radius:10px;
-}
-
-.recovery-uid{
-    font-size:22px;
-    font-weight:bold;
-    letter-spacing:2px;
-    margin:8px 0 15px;
-}
-
-.tablebox{
-    margin-top:20px;
-    overflow:auto;
-    background:#121212;
-    border:1px solid #2b2b2b;
-    border-radius:14px;
-}
-
-table{
-    width:100%;
-    border-collapse:collapse;
+table {
+    width: 100%;
+    border-collapse: collapse;
 }
 
 th,
-td{
-    padding:13px 15px;
-    text-align:left;
-    border-bottom:1px solid #252525;
+td {
+    padding: 13px 15px;
+    text-align: left;
+    border-bottom: 1px solid #252525;
+    white-space: nowrap;
 }
 
-th{
-    color:#aaa;
-    font-size:12px;
-    text-transform:uppercase;
+th {
+    color: #aaa;
+    font-size: 12px;
+    text-transform: uppercase;
 }
 
-.empty{
-    padding:25px;
-    color:#888;
+.empty {
+    padding: 25px;
+    color: #888;
+    text-align: center;
 }
 
-.small{
-    color:#888;
-    font-size:12px;
-    margin-top:8px;
+.message {
+    margin-top: 12px;
+    color: #aaa;
 }
 
-.actions{
-    display:flex;
-    gap:8px;
-    flex-wrap:wrap;
+.adminbox {
+    display: flex;
+    gap: 10px;
+    align-items: end;
 }
 
-.tabs{
-    display:flex;
-    gap:8px;
-    margin-top:20px;
-    flex-wrap:wrap;
+.adminbox > div {
+    flex: 1;
 }
 
-.tab{
-    background:#191919;
-    color:#aaa;
+.statusbar {
+    margin-top: 15px;
+    padding: 12px;
+    background: #111;
+    border: 1px solid #292929;
+    border-radius: 8px;
+    color: #aaa;
 }
 
-.tab.active{
-    background:#eee;
-    color:#080808;
-}
+@media(max-width:900px) {
 
-.panel{
-    display:none;
-}
-
-.panel.active{
-    display:block;
-}
-
-@media(max-width:1000px){
-
-    .cards{
-        grid-template-columns:repeat(2,1fr);
+    .cards {
+        grid-template-columns:
+            repeat(2, 1fr);
     }
 
-    .controls{
-        grid-template-columns:1fr;
+    .formgrid {
+        grid-template-columns: 1fr;
     }
+
 }
 
-@media(max-width:650px){
+@media(max-width:600px) {
 
-    .cards{
-        grid-template-columns:1fr;
+    .cards {
+        grid-template-columns: 1fr;
     }
 
-    .form-grid{
-        grid-template-columns:1fr;
+    .wrap {
+        padding: 14px;
     }
 
-    .wrap{
-        padding:14px;
-    }
-
-    header{
-        padding:18px;
-    }
-
-    h1{
-        font-size:22px;
-    }
 }
 
 </style>
+
 </head>
+
 
 <body>
 
@@ -328,11 +277,56 @@ Online RFID Attendance Dashboard
 <div class="wrap">
 
 
-<!-- ======================================================
-     STATISTICS
-====================================================== -->
+<!-- ========================================================
+     ADMIN KEY
+========================================================= -->
 
-<div class="cards">
+<div class="card">
+
+<div class="label">
+Dashboard Administrator
+</div>
+
+<div class="adminbox">
+
+<div>
+
+<label class="label">
+ADMIN KEY
+</label>
+
+<input
+    type="password"
+    id="adminKey"
+    placeholder="Enter ADMIN_KEY"
+/>
+
+</div>
+
+<button
+    class="primary"
+    onclick="saveAdminKey()"
+>
+    SAVE KEY
+</button>
+
+</div>
+
+<div
+    class="message"
+    id="adminMessage"
+>
+Enter your Render ADMIN_KEY once.
+</div>
+
+</div>
+
+
+<!-- ========================================================
+     STATISTICS
+========================================================= -->
+
+<div class="cards section">
 
 <div class="card">
 
@@ -340,7 +334,10 @@ Online RFID Attendance Dashboard
 Total Students
 </div>
 
-<div class="value" id="total">
+<div
+    class="value"
+    id="total"
+>
 —
 </div>
 
@@ -353,7 +350,10 @@ Total Students
 Present Today
 </div>
 
-<div class="value" id="present">
+<div
+    class="value"
+    id="present"
+>
 —
 </div>
 
@@ -363,10 +363,13 @@ Present Today
 <div class="card">
 
 <div class="label">
-Total Records
+Total Attendance Records
 </div>
 
-<div class="value" id="records">
+<div
+    class="value"
+    id="records"
+>
 —
 </div>
 
@@ -379,8 +382,11 @@ Total Records
 Server
 </div>
 
-<div class="value" id="serverStatus">
-—
+<div
+    class="value"
+    id="server"
+>
+CHECKING
 </div>
 
 </div>
@@ -388,160 +394,179 @@ Server
 </div>
 
 
-<!-- ======================================================
-     LAST SCAN
-====================================================== -->
+<!-- ========================================================
+     LAST ATTENDANCE
+========================================================= -->
 
-<div class="card scan">
+<div class="card section">
 
 <div class="label">
-Last RFID Scan
+Last Attendance Scan
 </div>
 
-<div class="scanbox">
-
-<div>
-
-<div class="name" id="lastName">
+<div
+    style="margin-top:12px"
+    id="lastScan"
+>
 Waiting for RFID scan...
 </div>
 
-<div class="meta" id="lastMeta">
-No scan received yet
-</div>
-
-</div>
-
-<div class="status waiting" id="lastStatus">
-ONLINE
-</div>
-
-</div>
-
 </div>
 
 
-<!-- ======================================================
-     API KEY
-====================================================== -->
-
-<div class="card" style="margin-top:20px">
-
-<div class="section-title">
-Management Access
-</div>
-
-<div class="form-grid">
-
-<div>
-
-<div class="label">
-API Key
-</div>
-
-<input
-    type="password"
-    id="apiKey"
-    placeholder="Enter API_KEY"
-/>
-
-</div>
-
-<div style="display:flex;align-items:end">
-
-<button
-    class="secondary"
-    onclick="saveAPIKey()"
->
-Save Key
-</button>
-
-</div>
-
-</div>
-
-<div class="small">
-The key is stored only in this browser and is used for
-student management operations.
-</div>
-
-<div id="keyMessage" class="message"></div>
-
-</div>
-
-
-<!-- ======================================================
+<!-- ========================================================
      TABS
-====================================================== -->
+========================================================= -->
+
+<div class="section">
 
 <div class="tabs">
 
 <button
     class="tab active"
-    onclick="showPanel('registerPanel',this)"
+    onclick="openTab('recovery', this)"
 >
-Register Student
+    RFID Recovery
 </button>
 
 <button
     class="tab"
-    onclick="showPanel('studentsPanel',this)"
+    onclick="openTab('register', this)"
 >
-Student List
+    Add Student
 </button>
 
 <button
     class="tab"
-    onclick="showPanel('recoveryPanel',this)"
+    onclick="openTab('students', this)"
 >
-RFID Recovery
+    Student List
 </button>
 
 <button
     class="tab"
-    onclick="showPanel('attendancePanel',this)"
+    onclick="openTab('attendance', this)"
 >
-Attendance
+    Attendance
 </button>
 
 </div>
 
 
-<!-- ======================================================
-     REGISTER STUDENT
-====================================================== -->
+<!-- ========================================================
+     RFID RECOVERY
+========================================================= -->
 
 <div
-    class="card panel active"
-    id="registerPanel"
-    style="margin-top:20px"
+    class="panel active"
+    id="recovery"
 >
 
-<div class="section-title">
+<div class="card recovery">
+
+<div class="label">
+Automatic RFID Recovery
+</div>
+
+<div
+    class="recovery-status"
+    id="recoveryStatus"
+>
+Waiting for an unknown RFID card...
+</div>
+
+<div
+    class="recovery-uid"
+    id="recoveryUID"
+>
+—
+</div>
+
+<div class="field">
+
+<label>
+Select Student
+</label>
+
+<select id="recoveryStudent">
+
+<option value="">
+Loading students...
+</option>
+
+</select>
+
+</div>
+
+<div style="margin-top:15px">
+
+<button
+    class="green"
+    onclick="registerRecoveredRFID()"
+>
+    REGISTER RFID TO STUDENT
+</button>
+
+<button
+    style="margin-left:8px"
+    onclick="refreshAll()"
+>
+    REFRESH
+</button>
+
+</div>
+
+<div
+    class="message"
+    id="recoveryMessage"
+>
+The UID will appear automatically when the ESP8266 scans an unknown card.
+</div>
+
+</div>
+
+</div>
+
+
+<!-- ========================================================
+     ADD STUDENT
+========================================================= -->
+
+<div
+    class="panel"
+    id="register"
+>
+
+<div class="card">
+
+<div class="label">
 Register Student
 </div>
 
-<div class="form-grid">
+<div
+    class="formgrid"
+    style="margin-top:15px"
+>
 
-<div>
+<div class="field">
 
-<div class="label">
+<label>
 Student ID
-</div>
+</label>
 
 <input
     id="studentID"
-    placeholder="Example: 1001"
+    placeholder="Example: 102"
 >
 
 </div>
 
 
-<div>
+<div class="field">
 
-<div class="label">
+<label>
 Name
-</div>
+</label>
 
 <input
     id="studentName"
@@ -551,11 +576,11 @@ Name
 </div>
 
 
-<div>
+<div class="field">
 
-<div class="label">
+<label>
 Class
-</div>
+</label>
 
 <input
     id="studentClass"
@@ -565,11 +590,11 @@ Class
 </div>
 
 
-<div>
+<div class="field">
 
-<div class="label">
+<label>
 Section
-</div>
+</label>
 
 <input
     id="studentSection"
@@ -578,58 +603,46 @@ Section
 
 </div>
 
-
-<div>
-
-<div class="label">
-RFID UID
 </div>
 
-<input
-    id="studentRFID"
-    placeholder="Example: 53 0E 2B 29"
+
+<div
+    class="message"
 >
-
+RFID is NOT required here. Add the student first, then scan the RFID card. The dashboard will automatically detect it.
 </div>
 
-</div>
-
-
-<div style="margin-top:15px">
 
 <button
-    class="success"
-    onclick="registerStudent()"
+    class="primary"
+    style="margin-top:15px"
+    onclick="addStudent()"
 >
-REGISTER STUDENT
+    REGISTER STUDENT
 </button>
 
-</div>
-
 
 <div
-    id="registerMessage"
     class="message"
-></div>
+    id="registerMessage"
+>
+</div>
+
+</div>
 
 </div>
 
 
-<!-- ======================================================
+<!-- ========================================================
      STUDENT LIST
-====================================================== -->
+========================================================= -->
 
 <div
-    class="card panel"
-    id="studentsPanel"
-    style="margin-top:20px"
+    class="panel"
+    id="students"
 >
 
-<div class="section-title">
-Registered Students
-</div>
-
-<div class="tablebox" style="margin-top:0">
+<div class="tablebox">
 
 <table>
 
@@ -651,14 +664,12 @@ Registered Students
 <tbody id="studentRows">
 
 <tr>
-
 <td
     colspan="6"
     class="empty"
 >
-Loading students...
+Loading...
 </td>
-
 </tr>
 
 </tbody>
@@ -670,98 +681,16 @@ Loading students...
 </div>
 
 
-<!-- ======================================================
-     RFID RECOVERY
-====================================================== -->
-
-<div
-    class="card panel"
-    id="recoveryPanel"
-    style="margin-top:20px"
->
-
-<div class="section-title">
-RFID Recovery
-</div>
-
-<div class="meta">
-Scan an unknown RFID card using the ESP8266.
-The UID will appear here automatically.
-</div>
-
-
-<div class="recovery-box">
-
-<div class="label">
-Last Unknown RFID
-</div>
-
-<div
-    class="recovery-uid"
-    id="recoveryUID"
->
-Waiting for unknown card...
-</div>
-
-
-<div class="form-grid">
-
-<div>
-
-<div class="label">
-Select Student
-</div>
-
-<select id="recoveryStudent">
-
-<option value="">
-Select student
-</option>
-
-</select>
-
-</div>
-
-
-<div style="display:flex;align-items:end">
-
-<button
-    class="success"
-    onclick="registerRecoveredRFID()"
->
-REGISTER RFID
-</button>
-
-</div>
-
-</div>
-
-
-<div
-    id="recoveryMessage"
-    class="message"
-></div>
-
-</div>
-
-</div>
-
-
-<!-- ======================================================
+<!-- ========================================================
      ATTENDANCE
-====================================================== -->
+========================================================= -->
 
 <div
-    class="card panel"
-    id="attendancePanel"
-    style="margin-top:20px"
+    class="panel"
+    id="attendance"
 >
 
-<div class="section-title">
-Today's Attendance
-</div>
-
-<div class="tablebox" style="margin-top:0">
+<div class="tablebox">
 
 <table>
 
@@ -781,17 +710,15 @@ Today's Attendance
 
 </thead>
 
-<tbody id="rows">
+<tbody id="attendanceRows">
 
 <tr>
-
 <td
     colspan="7"
     class="empty"
 >
 Loading...
 </td>
-
 </tr>
 
 </tbody>
@@ -802,305 +729,229 @@ Loading...
 
 </div>
 
+</div>
 
 </div>
 
 
 <script>
 
-
-// ==========================================================
-// GLOBAL DATA
-// ==========================================================
-
-let previousTopId = null;
-
-let unknownRFID = null;
-
-
-// ==========================================================
-// API KEY
-// ==========================================================
-
-document.getElementById("apiKey").value =
-    localStorage.getItem("attendance_api_key") || "";
-
-
-function saveAPIKey(){
-
-    const key =
-        document.getElementById("apiKey").value.trim();
-
-    if(!key){
-
-        showMessage(
-            "keyMessage",
-            "Please enter the API key.",
-            "error"
-        );
-
-        return;
-    }
-
-    localStorage.setItem(
-        "attendance_api_key",
-        key
-    );
-
-    showMessage(
-        "keyMessage",
-        "API key saved in this browser.",
-        "success"
-    );
-}
-
-
-function getAPIKey(){
-
-    return localStorage.getItem(
-        "attendance_api_key"
+let adminKey =
+    localStorage.getItem(
+        "smart_attendance_admin_key"
     ) || "";
+
+let lastRecoveryID = null;
+
+
+/* ==========================================================
+   BASIC HELPERS
+========================================================== */
+
+function escapeHTML(value) {
+
+    return String(
+        value ?? ""
+    ).replace(
+        /[&<>"']/g,
+        function(c) {
+
+            return {
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': "&quot;",
+                "'": "&#39;"
+            }[c];
+
+        }
+    );
 }
 
 
-// ==========================================================
-// JSON HELPER
-// ==========================================================
+function headers() {
 
-async function getJSON(url, options = {}){
+    return {
+        "Content-Type":
+            "application/json",
+
+        "X-Admin-Key":
+            adminKey
+    };
+
+}
+
+
+async function api(
+    url,
+    options = {}
+) {
 
     const response =
         await fetch(
             url,
             {
-                cache:"no-store",
+                cache: "no-store",
                 ...options
             }
         );
 
-    if(!response.ok){
+    const data =
+        await response.json();
+
+    if (!response.ok) {
 
         throw new Error(
-            "HTTP " + response.status
+            data.message ||
+            "HTTP " +
+            response.status
         );
-    }
-
-    return response.json();
-}
-
-
-// ==========================================================
-// AUTHORIZED REQUEST
-// ==========================================================
-
-function authorizedOptions(method="GET", body=null){
-
-    const options = {
-        method:method,
-        headers:{
-            "X-API-Key":getAPIKey(),
-            "Content-Type":"application/json"
-        }
-    };
-
-    if(body !== null){
-
-        options.body =
-            JSON.stringify(body);
 
     }
 
-    return options;
+    return data;
+
 }
 
 
-// ==========================================================
-// STATISTICS + TODAY
-// ==========================================================
+/* ==========================================================
+   ADMIN KEY
+========================================================== */
 
-async function refresh(){
+function saveAdminKey() {
 
-    try{
+    adminKey =
+        document
+        .getElementById("adminKey")
+        .value
+        .trim();
 
-        const [stats, todayData] =
-            await Promise.all([
+    localStorage.setItem(
+        "smart_attendance_admin_key",
+        adminKey
+    );
 
-                getJSON("/api/stats"),
+    document
+    .getElementById("adminMessage")
+    .textContent =
+        "ADMIN_KEY saved in this browser.";
 
-                getJSON("/api/today")
+    refreshAll();
 
-            ]);
-
-
-        document.getElementById("total")
-            .textContent =
-            stats.total_students;
-
-
-        document.getElementById("present")
-            .textContent =
-            stats.today_present;
-
-
-        document.getElementById("records")
-            .textContent =
-            stats.total_attendance_records;
+}
 
 
-        document.getElementById("serverStatus")
-            .textContent =
+document
+.getElementById("adminKey")
+.value = adminKey;
+
+
+/* ==========================================================
+   TABS
+========================================================== */
+
+function openTab(
+    name,
+    button
+) {
+
+    document
+    .querySelectorAll(".panel")
+    .forEach(
+        p => p.classList.remove("active")
+    );
+
+    document
+    .querySelectorAll(".tab")
+    .forEach(
+        b => b.classList.remove("active")
+    );
+
+    document
+    .getElementById(name)
+    .classList.add("active");
+
+    button.classList.add("active");
+
+}
+
+
+/* ==========================================================
+   STATISTICS
+========================================================== */
+
+async function loadStats() {
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/stats",
+                {
+                    cache: "no-store"
+                }
+            );
+
+        const data =
+            await response.json();
+
+        document
+        .getElementById("total")
+        .textContent =
+            data.total_students;
+
+        document
+        .getElementById("present")
+        .textContent =
+            data.today_present;
+
+        document
+        .getElementById("records")
+        .textContent =
+            data.total_attendance_records;
+
+        document
+        .getElementById("server")
+        .textContent =
             "ONLINE";
 
 
-        document.getElementById("serverStatus")
-            .style.color =
-            "#55ff88";
+        if (data.last_scan) {
 
+            const x =
+                data.last_scan;
 
-        // --------------------------------------------------
-        // LAST SCAN
-        // --------------------------------------------------
+            document
+            .getElementById("lastScan")
+            .innerHTML =
 
-        if(stats.last_scan){
+                "<strong>" +
+                escapeHTML(x.name) +
+                "</strong>" +
 
-            const last =
-                stats.last_scan;
+                " — ID " +
+                escapeHTML(x.student_id) +
 
-
-            document.getElementById("lastName")
-                .textContent =
-                last.name;
-
-
-            document.getElementById("lastMeta")
-                .textContent =
-                "ID " +
-                last.student_id +
-                " • Class " +
-                last.class_name +
+                " — Class " +
+                escapeHTML(x.class_name) +
                 "-" +
-                last.section +
-                " • " +
-                last.date +
+                escapeHTML(x.section) +
+
+                "<br>" +
+
+                escapeHTML(x.date) +
                 " " +
-                last.time;
-
-
-            if(
-                previousTopId !== null &&
-                last.id !== previousTopId
-            ){
-
-                document.getElementById(
-                    "lastStatus"
-                ).textContent =
-                "ATTENDANCE MARKED";
-
-            }
-
-        }
-
-
-        // --------------------------------------------------
-        // TODAY TABLE
-        // --------------------------------------------------
-
-        const rows =
-            document.getElementById("rows");
-
-
-        if(!todayData.attendance.length){
-
-            rows.innerHTML =
-            `
-            <tr>
-                <td colspan="7" class="empty">
-                    No attendance recorded today.
-                </td>
-            </tr>
-            `;
-
-        }
-        else{
-
-            const top =
-                todayData.attendance[0];
-
-
-            document.getElementById("lastName")
-                .textContent =
-                top.name;
-
-
-            document.getElementById("lastMeta")
-                .textContent =
-                "ID " +
-                top.student_id +
-                " • Class " +
-                top.class_name +
-                "-" +
-                top.section +
-                " • " +
-                top.date +
-                " " +
-                top.time;
-
-
-            rows.innerHTML =
-                todayData.attendance
-                .map(x => `
-
-                <tr>
-
-                    <td>
-                        ${escapeHTML(x.student_id)}
-                    </td>
-
-                    <td>
-                        ${escapeHTML(x.name)}
-                    </td>
-
-                    <td>
-                        ${escapeHTML(x.class_name)}
-                    </td>
-
-                    <td>
-                        ${escapeHTML(x.section)}
-                    </td>
-
-                    <td>
-                        ${escapeHTML(x.date)}
-                    </td>
-
-                    <td>
-                        ${escapeHTML(x.time)}
-                    </td>
-
-                    <td>
-                        ${escapeHTML(x.rfid_uid || "")}
-                    </td>
-
-                </tr>
-
-                `)
-                .join("");
+                escapeHTML(x.time);
 
         }
 
     }
-    catch(error){
+    catch (error) {
 
-        document.getElementById("serverStatus")
-            .textContent =
+        document
+        .getElementById("server")
+        .textContent =
             "ERROR";
-
-        document.getElementById("serverStatus")
-            .style.color =
-            "#ff5555";
-
-        document.getElementById("lastStatus")
-            .textContent =
-            "SERVER ERROR";
 
         console.error(error);
 
@@ -1109,244 +960,75 @@ async function refresh(){
 }
 
 
-// ==========================================================
-// REGISTER STUDENT
-// ==========================================================
+/* ==========================================================
+   AUTOMATIC UNKNOWN RFID
+========================================================== */
 
-async function registerStudent(){
+async function checkUnknownRFID() {
 
-    const data = {
-
-        student_id:
-            document.getElementById(
-                "studentID"
-            ).value.trim(),
-
-        name:
-            document.getElementById(
-                "studentName"
-            ).value.trim(),
-
-        class_name:
-            document.getElementById(
-                "studentClass"
-            ).value.trim(),
-
-        section:
-            document.getElementById(
-                "studentSection"
-            ).value.trim(),
-
-        rfid_uid:
-            document.getElementById(
-                "studentRFID"
-            ).value.trim()
-
-    };
-
-
-    if(
-        !data.student_id ||
-        !data.name ||
-        !data.class_name ||
-        !data.section ||
-        !data.rfid_uid
-    ){
-
-        showMessage(
-            "registerMessage",
-            "Please fill in all fields.",
-            "error"
-        );
-
+    if (!adminKey) {
         return;
     }
 
+    try {
 
-    try{
-
-        const result =
-            await getJSON(
-                "/api/students",
-                authorizedOptions(
-                    "POST",
-                    data
-                )
+        const data =
+            await api(
+                "/api/rfid/last-unknown",
+                {
+                    headers: headers()
+                }
             );
 
 
-        showMessage(
-            "registerMessage",
-            result.message ||
-            "Student registered successfully.",
-            "success"
-        );
+        if (!data.found) {
 
-
-        document.getElementById(
-            "studentID"
-        ).value = "";
-
-        document.getElementById(
-            "studentName"
-        ).value = "";
-
-        document.getElementById(
-            "studentClass"
-        ).value = "";
-
-        document.getElementById(
-            "studentSection"
-        ).value = "";
-
-        document.getElementById(
-            "studentRFID"
-        ).value = "";
-
-
-        loadStudents();
-
-        refresh();
-
-    }
-    catch(error){
-
-        showMessage(
-            "registerMessage",
-            "Registration failed. Check API key and student details.",
-            "error"
-        );
-
-        console.error(error);
-
-    }
-
-}
-
-
-// ==========================================================
-// LOAD STUDENTS
-// ==========================================================
-
-async function loadStudents(){
-
-    try{
-
-        const students =
-            await getJSON(
-                "/api/students"
-            );
-
-
-        const rows =
-            document.getElementById(
-                "studentRows"
-            );
-
-
-        const select =
-            document.getElementById(
-                "recoveryStudent"
-            );
-
-
-        if(!students.length){
-
-            rows.innerHTML =
-            `
-            <tr>
-                <td colspan="6" class="empty">
-                    No students registered.
-                </td>
-            </tr>
-            `;
-
-        }
-        else{
-
-            rows.innerHTML =
-                students
-                .map(student => `
-
-                <tr>
-
-                    <td>
-                        ${escapeHTML(student.student_id)}
-                    </td>
-
-                    <td>
-                        ${escapeHTML(student.name)}
-                    </td>
-
-                    <td>
-                        ${escapeHTML(student.class_name)}
-                    </td>
-
-                    <td>
-                        ${escapeHTML(student.section)}
-                    </td>
-
-                    <td>
-                        ${escapeHTML(student.rfid_uid || "")}
-                    </td>
-
-                    <td>
-
-                        <button
-                            class="danger"
-                            onclick="deleteStudent('${escapeJS(student.student_id)}','${escapeJS(student.name)}')"
-                        >
-                            DELETE
-                        </button>
-
-                    </td>
-
-                </tr>
-
-                `)
-                .join("");
+            return;
 
         }
 
 
-        // --------------------------------------------------
-        // RECOVERY DROPDOWN
-        // --------------------------------------------------
+        if (
+            lastRecoveryID !== null &&
+            Number(data.id) ===
+            Number(lastRecoveryID)
+        ) {
 
-        select.innerHTML =
-            `<option value="">
-                Select student
-            </option>`;
+            return;
 
-
-        students.forEach(student => {
-
-            const option =
-                document.createElement("option");
-
-            option.value =
-                student.student_id;
-
-            option.textContent =
-                student.student_id +
-                " — " +
-                student.name +
-                " (" +
-                student.class_name +
-                "-" +
-                student.section +
-                ")";
+        }
 
 
-            select.appendChild(option);
+        lastRecoveryID =
+            data.id;
 
-        });
+
+        document
+        .getElementById("recoveryStatus")
+        .textContent =
+            "NEW UNKNOWN RFID CARD DETECTED";
+
+
+        document
+        .getElementById("recoveryUID")
+        .textContent =
+            data.display_uid;
+
+
+        document
+        .getElementById("recoveryMessage")
+        .textContent =
+            "Select the student who owns this card, then click REGISTER RFID.";
+
+
+        await loadStudents();
+
 
     }
-    catch(error){
+    catch (error) {
 
         console.error(
-            "Could not load students:",
+            "RFID recovery:",
             error
         );
 
@@ -1355,168 +1037,324 @@ async function loadStudents(){
 }
 
 
-// ==========================================================
-// DELETE STUDENT
-// ==========================================================
+/* ==========================================================
+   LOAD STUDENTS
+========================================================== */
 
-async function deleteStudent(
-    studentID,
-    studentName
-){
+async function loadStudents() {
 
-    const confirmed =
-        confirm(
-            "Delete student?\n\n" +
-            studentID +
-            " — " +
-            studentName +
-            "\n\n" +
-            "This will also delete this student's attendance records."
-        );
-
-
-    if(!confirmed){
-
+    if (!adminKey) {
         return;
-
     }
 
+    try {
 
-    try{
-
-        const result =
-            await getJSON(
-                "/api/students/" +
-                encodeURIComponent(studentID),
-                authorizedOptions("DELETE")
+        const students =
+            await api(
+                "/api/students",
+                {
+                    headers:
+                        headers()
+                }
             );
 
 
-        alert(
-            result.message ||
-            "Student deleted successfully."
+        /* -----------------------------------------------
+           Recovery dropdown
+        ------------------------------------------------ */
+
+        const select =
+            document
+            .getElementById(
+                "recoveryStudent"
+            );
+
+        const oldValue =
+            select.value;
+
+        select.innerHTML =
+            '<option value="">Select student...</option>';
+
+
+        students.forEach(
+            student => {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+                option.value =
+                    student.student_id;
+
+                option.textContent =
+
+                    student.student_id +
+                    " — " +
+                    student.name +
+                    " — " +
+                    student.class_name +
+                    "-" +
+                    student.section;
+
+                select.appendChild(
+                    option
+                );
+
+            }
         );
 
 
-        loadStudents();
+        if (oldValue) {
 
-        refresh();
+            select.value =
+                oldValue;
+
+        }
+
+
+        /* -----------------------------------------------
+           Student table
+        ------------------------------------------------ */
+
+        const rows =
+            document
+            .getElementById(
+                "studentRows"
+            );
+
+
+        if (!students.length) {
+
+            rows.innerHTML =
+                '<tr><td colspan="6" class="empty">' +
+                'No students registered.' +
+                '</td></tr>';
+
+            return;
+
+        }
+
+
+        rows.innerHTML =
+            students.map(
+                student => {
+
+                    return `
+                    <tr>
+
+                        <td>
+                            ${escapeHTML(
+                                student.student_id
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHTML(
+                                student.name
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHTML(
+                                student.class_name
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHTML(
+                                student.section
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHTML(
+                                student.rfid_uid
+                                ? formatUID(
+                                    student.rfid_uid
+                                  )
+                                : "NOT ASSIGNED"
+                            )}
+                        </td>
+
+                        <td>
+
+                            <button
+                                class="danger"
+                                onclick="deleteStudent('${escapeHTML(
+                                    student.student_id
+                                )}')"
+                            >
+                                DELETE
+                            </button>
+
+                        </td>
+
+                    </tr>
+                    `;
+
+                }
+            ).join("");
 
     }
-    catch(error){
+    catch (error) {
 
-        alert(
-            "Delete failed.\n\n" +
-            "Check the API key and server."
+        console.error(
+            "Students:",
+            error
         );
-
-        console.error(error);
 
     }
 
 }
 
 
-// ==========================================================
-// RFID RECOVERY
-// ==========================================================
+/* ==========================================================
+   FORMAT UID
+========================================================== */
 
-async function checkRFIDRecovery(){
+function formatUID(uid) {
 
-    if(!unknownRFID){
+    uid =
+        String(uid)
+        .replace(
+            /[^0-9A-Fa-f]/g,
+            ""
+        )
+        .toUpperCase();
 
-        return;
+    return uid
+        .match(/.{1,2}/g)
+        ?.join(" ") || uid;
+
+}
+
+
+/* ==========================================================
+   ADD STUDENT
+========================================================== */
+
+async function addStudent() {
+
+    const student_id =
+        document
+        .getElementById("studentID")
+        .value
+        .trim();
+
+    const name =
+        document
+        .getElementById("studentName")
+        .value
+        .trim();
+
+    const class_name =
+        document
+        .getElementById("studentClass")
+        .value
+        .trim();
+
+    const section =
+        document
+        .getElementById("studentSection")
+        .value
+        .trim();
+
+
+    const message =
+        document
+        .getElementById(
+            "registerMessage"
+        );
+
+
+    try {
+
+        const data =
+            await api(
+                "/api/students",
+                {
+                    method: "POST",
+
+                    headers:
+                        headers(),
+
+                    body:
+                        JSON.stringify({
+                            student_id,
+                            name,
+                            class_name,
+                            section
+                        })
+                }
+            );
+
+
+        message.textContent =
+            data.message;
+
+
+        document
+        .getElementById("studentID")
+        .value = "";
+
+        document
+        .getElementById("studentName")
+        .value = "";
+
+        document
+        .getElementById("studentClass")
+        .value = "";
+
+        document
+        .getElementById("studentSection")
+        .value = "";
+
+
+        await loadStudents();
+        await loadStats();
 
     }
+    catch (error) {
 
-
-    try{
-
-        const result =
-            await getJSON(
-                "/api/rfid/recovery",
-                authorizedOptions(
-                    "POST",
-                    {
-                        rfid_uid:unknownRFID
-                    }
-                )
-            );
-
-
-        if(result.registered){
-
-            document.getElementById(
-                "recoveryUID"
-            ).textContent =
-                unknownRFID +
-                " — ALREADY REGISTERED";
-
-
-            showMessage(
-                "recoveryMessage",
-                "This RFID is already assigned to " +
-                result.student.name,
-                "error"
-            );
-
-        }
-        else{
-
-            document.getElementById(
-                "recoveryUID"
-            ).textContent =
-                unknownRFID;
-
-            showMessage(
-                "recoveryMessage",
-                "Unknown RFID detected. Select a student and register it.",
-                "success"
-            );
-
-        }
-
-    }
-    catch(error){
-
-        console.error(error);
+        message.textContent =
+            error.message;
 
     }
 
 }
 
 
-// ==========================================================
-// REGISTER RECOVERED RFID
-// ==========================================================
+/* ==========================================================
+   REGISTER RECOVERED RFID
+========================================================== */
 
-async function registerRecoveredRFID(){
+async function registerRecoveredRFID() {
 
-    if(!unknownRFID){
-
-        showMessage(
-            "recoveryMessage",
-            "No unknown RFID has been scanned yet.",
-            "error"
-        );
-
-        return;
-
-    }
+    const uidText =
+        document
+        .getElementById(
+            "recoveryUID"
+        )
+        .textContent
+        .trim();
 
 
     const studentID =
-        document.getElementById(
+        document
+        .getElementById(
             "recoveryStudent"
-        ).value;
+        )
+        .value;
 
 
-    if(!studentID){
+    if (
+        !uidText ||
+        uidText === "—"
+    ) {
 
-        showMessage(
-            "recoveryMessage",
-            "Please select a student.",
-            "error"
+        alert(
+            "No unknown RFID card has been detected yet."
         );
 
         return;
@@ -1524,94 +1362,323 @@ async function registerRecoveredRFID(){
     }
 
 
-    try{
+    if (!studentID) {
 
-        const result =
-            await getJSON(
+        alert(
+            "Please select a student."
+        );
+
+        return;
+
+    }
+
+
+    const uid =
+        uidText.replace(
+            /\s/g,
+            ""
+        );
+
+
+    try {
+
+        const data =
+            await api(
                 "/api/rfid/recovery/register",
-                authorizedOptions(
-                    "POST",
-                    {
-                        student_id:studentID,
-                        rfid_uid:unknownRFID
-                    }
-                )
+                {
+                    method: "POST",
+
+                    headers:
+                        headers(),
+
+                    body:
+                        JSON.stringify({
+                            rfid_uid: uid,
+                            student_id:
+                                studentID
+                        })
+                }
             );
 
 
-        showMessage(
-            "recoveryMessage",
-            result.message ||
-            "RFID registered successfully.",
-            "success"
-        );
+        document
+        .getElementById(
+            "recoveryStatus"
+        )
+        .textContent =
+            "RFID REGISTERED SUCCESSFULLY";
 
 
-        unknownRFID = null;
+        document
+        .getElementById(
+            "recoveryMessage"
+        )
+        .textContent =
+
+            data.name +
+            " is now linked to RFID " +
+            data.display_uid;
 
 
-        document.getElementById(
-            "recoveryUID"
-        ).textContent =
-            "Waiting for unknown card...";
-
-
-        document.getElementById(
+        document
+        .getElementById(
             "recoveryStudent"
-        ).value = "";
+        )
+        .value = "";
 
 
-        loadStudents();
+        lastRecoveryID = null;
 
-        refresh();
+
+        await loadStudents();
+        await loadStats();
+
+
+        setTimeout(
+            () => {
+
+                document
+                .getElementById(
+                    "recoveryUID"
+                )
+                .textContent =
+                    "—";
+
+                document
+                .getElementById(
+                    "recoveryStatus"
+                )
+                .textContent =
+                    "Waiting for an unknown RFID card...";
+
+                document
+                .getElementById(
+                    "recoveryMessage"
+                )
+                .textContent =
+                    "The next unknown RFID will appear automatically.";
+
+            },
+            2000
+        );
 
     }
-    catch(error){
+    catch (error) {
 
-        showMessage(
-            "recoveryMessage",
-            "RFID registration failed.",
-            "error"
-        );
-
-        console.error(error);
+        document
+        .getElementById(
+            "recoveryMessage"
+        )
+        .textContent =
+            error.message;
 
     }
 
 }
 
 
-// ==========================================================
-// DETECT UNKNOWN RFID
-//
-// The ESP8266 does not currently push directly into the
-// browser. We therefore poll the scan endpoint information
-// through a small server-side last-scan mechanism.
-//
-// If you want instant browser notifications, we can add
-// Server-Sent Events later.
-// ==========================================================
+/* ==========================================================
+   DELETE STUDENT
+========================================================== */
 
-let previousAttendanceTop = null;
+async function deleteStudent(
+    studentID
+) {
+
+    if (
+        !confirm(
+            "Delete student " +
+            studentID +
+            "?\n\n" +
+            "Their attendance records will also be deleted."
+        )
+    ) {
+
+        return;
+
+    }
 
 
-async function checkUnknownRFID(){
-
-    try{
+    try {
 
         const data =
-            await getJSON(
-                "/api/today"
+            await api(
+                "/api/students/" +
+                encodeURIComponent(
+                    studentID
+                ),
+                {
+                    method: "DELETE",
+
+                    headers:
+                        headers()
+                }
             );
 
 
-        /*
-         * The current API returns attendance records only.
-         * Unknown RFID information is returned directly by
-         * /api/scan and therefore cannot automatically reach
-         * this browser yet.
-         *
-         * The dashboard will still have the recovery controls,
-         * and the next version of app.py can store the last
-         * unknown UID so this panel becomes au*
+        alert(
+            data.message
+        );
 
+
+        await loadStudents();
+        await loadAttendance();
+        await loadStats();
+
+    }
+    catch (error) {
+
+        alert(
+            error.message
+        );
+
+    }
+
+}
+
+
+/* ==========================================================
+   ATTENDANCE
+========================================================== */
+
+async function loadAttendance() {
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/today",
+                {
+                    cache: "no-store"
+                }
+            );
+
+        const data =
+            await response.json();
+
+
+        const rows =
+            document
+            .getElementById(
+                "attendanceRows"
+            );
+
+
+        if (
+            !data.attendance.length
+        ) {
+
+            rows.innerHTML =
+                '<tr><td colspan="7" class="empty">' +
+                'No attendance recorded today.' +
+                '</td></tr>';
+
+            return;
+
+        }
+
+
+        rows.innerHTML =
+            data.attendance.map(
+                x => {
+
+                    return `
+                    <tr>
+
+                        <td>
+                            ${escapeHTML(
+                                x.student_id
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHTML(
+                                x.name
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHTML(
+                                x.class_name
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHTML(
+                                x.section
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHTML(
+                                x.date
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHTML(
+                                x.time
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHTML(
+                                x.rfid_uid
+                                ? formatUID(
+                                    x.rfid_uid
+                                  )
+                                : ""
+                            )}
+                        </td>
+
+                    </tr>
+                    `;
+
+                }
+            ).join("");
+
+    }
+    catch (error) {
+
+        console.error(
+            "Attendance:",
+            error
+        );
+
+    }
+
+}
+
+
+/* ==========================================================
+   REFRESH EVERYTHING
+========================================================== */
+
+async function refreshAll() {
+
+    await Promise.all([
+        loadStats(),
+        loadStudents(),
+        loadAttendance(),
+        checkUnknownRFID()
+    ]);
+
+}
+
+
+/* ==========================================================
+   START
+========================================================== */
+
+refreshAll();
+
+setInterval(
+    refreshAll,
+    1500
+);
+
+</script>
+
+</body>
+
+</html>
