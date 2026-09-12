@@ -33,7 +33,7 @@ def get_db():
 
 def setup_database():
     """
-    Safely prepares the small additional table required for
+    Safely prepares the additional table required for
     automatic RFID recovery.
 
     Existing students and attendance are NOT deleted.
@@ -169,14 +169,14 @@ def dashboard():
 @app.get("/api/health")
 def health():
 
+    conn = None
+
     try:
         conn = get_db()
 
         with conn.cursor() as cur:
             cur.execute("SELECT 1")
             cur.fetchone()
-
-        conn.close()
 
         return jsonify({
             "status": "online",
@@ -191,6 +191,10 @@ def health():
             "error": str(e)
         }), 500
 
+    finally:
+        if conn:
+            conn.close()
+
 
 # ============================================================
 # ESP8266 RFID SCAN
@@ -199,6 +203,9 @@ def health():
 @app.post("/api/scan")
 def scan():
 
+    # --------------------------------------------------------
+    # API authentication
+    # --------------------------------------------------------
     if not valid_api_key():
         return jsonify({
             "success": False,
@@ -223,9 +230,10 @@ def scan():
             cursor_factory=RealDictCursor
         ) as cur:
 
-            # ------------------------------------------------
-            # Find student
-            # ------------------------------------------------
+            # =================================================
+            # FIND STUDENT
+            # =================================================
+
             cur.execute("""
                 SELECT
                     id,
@@ -238,7 +246,11 @@ def scan():
                 WHERE UPPER(
                     REPLACE(
                         REPLACE(
-                            REPLACE(COALESCE(rfid_uid, ''), ' ', ''),
+                            REPLACE(
+                                COALESCE(rfid_uid, ''),
+                                ' ',
+                                ''
+                            ),
                             ':',
                             ''
                         ),
@@ -295,8 +307,8 @@ def scan():
             cur.execute("""
                 SELECT
                     id,
-                    date,
-                    time
+                    date::text AS date,
+                    time::text AS time
                 FROM attendance
                 WHERE student_id = %s
                   AND date = %s
@@ -308,6 +320,10 @@ def scan():
             ))
 
             existing = cur.fetchone()
+
+            # =================================================
+            # ALREADY PRESENT
+            # =================================================
 
             if existing:
 
@@ -331,9 +347,10 @@ def scan():
                 })
 
 
-            # ------------------------------------------------
-            # Mark attendance
-            # ------------------------------------------------
+            # =================================================
+            # MARK ATTENDANCE
+            # =================================================
+
             cur.execute("""
                 INSERT INTO attendance
                     (
@@ -508,6 +525,7 @@ def register_recovered_rfid():
     data = request.get_json(silent=True) or {}
 
     uid = normalize_uid(data.get("rfid_uid"))
+
     student_id = str(
         data.get("student_id", "")
     ).strip()
@@ -529,6 +547,7 @@ def register_recovered_rfid():
             # ------------------------------------------------
             # Make sure student exists
             # ------------------------------------------------
+
             cur.execute("""
                 SELECT
                     id,
@@ -555,6 +574,7 @@ def register_recovered_rfid():
             # ------------------------------------------------
             # Do not overwrite an existing RFID accidentally.
             # ------------------------------------------------
+
             if student["rfid_uid"]:
 
                 existing_uid = normalize_uid(
@@ -574,6 +594,7 @@ def register_recovered_rfid():
             # ------------------------------------------------
             # Make sure this RFID isn't assigned elsewhere.
             # ------------------------------------------------
+
             cur.execute("""
                 SELECT
                     student_id,
@@ -582,7 +603,11 @@ def register_recovered_rfid():
                 WHERE UPPER(
                     REPLACE(
                         REPLACE(
-                            REPLACE(COALESCE(rfid_uid, ''), ' ', ''),
+                            REPLACE(
+                                COALESCE(rfid_uid, ''),
+                                ' ',
+                                ''
+                            ),
                             ':',
                             ''
                         ),
@@ -613,6 +638,7 @@ def register_recovered_rfid():
             # ------------------------------------------------
             # Assign RFID
             # ------------------------------------------------
+
             cur.execute("""
                 UPDATE students
                 SET rfid_uid = %s
@@ -626,6 +652,7 @@ def register_recovered_rfid():
             # ------------------------------------------------
             # Remove from recovery queue
             # ------------------------------------------------
+
             cur.execute("""
                 DELETE FROM rfid_recovery
                 WHERE rfid_uid = %s
@@ -673,6 +700,10 @@ def stats():
             cursor_factory=RealDictCursor
         ) as cur:
 
+            # ------------------------------------------------
+            # Total students
+            # ------------------------------------------------
+
             cur.execute("""
                 SELECT COUNT(*) AS count
                 FROM students
@@ -680,6 +711,10 @@ def stats():
 
             total_students = cur.fetchone()["count"]
 
+
+            # ------------------------------------------------
+            # Today's attendance
+            # ------------------------------------------------
 
             cur.execute("""
                 SELECT COUNT(*) AS count
@@ -690,6 +725,10 @@ def stats():
             today_present = cur.fetchone()["count"]
 
 
+            # ------------------------------------------------
+            # Total attendance records
+            # ------------------------------------------------
+
             cur.execute("""
                 SELECT COUNT(*) AS count
                 FROM attendance
@@ -698,14 +737,23 @@ def stats():
             total_records = cur.fetchone()["count"]
 
 
+            # ------------------------------------------------
+            # LAST SCAN
+            #
+            # IMPORTANT:
+            # date and time are explicitly converted to TEXT.
+            # PostgreSQL otherwise returns Python date/time
+            # objects which Flask cannot JSON serialize.
+            # ------------------------------------------------
+
             cur.execute("""
                 SELECT
                     student_id,
                     name,
                     class_name,
                     section,
-                    date,
-                    time,
+                    date::text AS date,
+                    time::text AS time,
                     rfid_uid
                 FROM attendance
                 ORDER BY id DESC
@@ -746,6 +794,12 @@ def today():
             cursor_factory=RealDictCursor
         ) as cur:
 
+            # ------------------------------------------------
+            # IMPORTANT:
+            # Convert PostgreSQL date/time to TEXT so Flask
+            # can safely return JSON.
+            # ------------------------------------------------
+
             cur.execute("""
                 SELECT
                     id,
@@ -753,8 +807,8 @@ def today():
                     name,
                     class_name,
                     section,
-                    date,
-                    time,
+                    date::text AS date,
+                    time::text AS time,
                     rfid_uid
                 FROM attendance
                 WHERE date = %s
@@ -794,6 +848,11 @@ def attendance():
             cursor_factory=RealDictCursor
         ) as cur:
 
+            # ------------------------------------------------
+            # IMPORTANT:
+            # Convert date/time to TEXT for JSON serialization.
+            # ------------------------------------------------
+
             cur.execute("""
                 SELECT
                     id,
@@ -801,8 +860,8 @@ def attendance():
                     name,
                     class_name,
                     section,
-                    date,
-                    time,
+                    date::text AS date,
+                    time::text AS time,
                     rfid_uid
                 FROM attendance
                 ORDER BY id DESC
@@ -892,7 +951,7 @@ def add_student():
     ).strip()
 
     # RFID is OPTIONAL during student creation.
-    # It can be assigned automatically later by scanning.
+    # It can be assigned later by scanning.
     rfid_uid = normalize_uid(
         data.get("rfid_uid")
     )
@@ -920,6 +979,7 @@ def add_student():
             # ------------------------------------------------
             # Student ID duplicate
             # ------------------------------------------------
+
             cur.execute("""
                 SELECT 1
                 FROM students
@@ -938,6 +998,7 @@ def add_student():
             # ------------------------------------------------
             # RFID duplicate
             # ------------------------------------------------
+
             if rfid_uid:
 
                 cur.execute("""
@@ -969,6 +1030,10 @@ def add_student():
                             "RFID UID is already registered"
                     }), 409
 
+
+            # ------------------------------------------------
+            # Insert student
+            # ------------------------------------------------
 
             cur.execute("""
                 INSERT INTO students
@@ -1034,6 +1099,10 @@ def delete_student(student_id):
 
         with conn.cursor() as cur:
 
+            # ------------------------------------------------
+            # Check student exists
+            # ------------------------------------------------
+
             cur.execute("""
                 SELECT id
                 FROM students
@@ -1051,13 +1120,22 @@ def delete_student(student_id):
                 }), 404
 
 
-            # Remove attendance first so databases with
-            # foreign-key constraints can delete the student.
+            # ------------------------------------------------
+            # Remove attendance first.
+            #
+            # This allows deletion even when a foreign-key
+            # constraint exists.
+            # ------------------------------------------------
+
             cur.execute("""
                 DELETE FROM attendance
                 WHERE student_id = %s
             """, (student_id,))
 
+
+            # ------------------------------------------------
+            # Delete student
+            # ------------------------------------------------
 
             cur.execute("""
                 DELETE FROM students
